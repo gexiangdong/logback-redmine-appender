@@ -109,9 +109,7 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body,
             HttpHeaders headers, HttpStatus status, WebRequest request) {
-        if(log.isErrorEnabled()) {
-            logger.error("内部错误", ex);
-        }
+        logger.error("内部错误", ex);
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 }
