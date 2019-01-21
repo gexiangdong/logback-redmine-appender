@@ -23,9 +23,4 @@ public class CostTooLongException extends RuntimeException {
 		super(cause);
 	}
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 2574953708536811320L;
-
 }
