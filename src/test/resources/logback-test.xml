@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="redmine" class="cn.devmgr.common.logback.RedmineIssueAppender">
+        <url>https://devmgr.cn/redmine/</url>
+        <apiKey>957f727df4eeb33706acb7ba93bea31f734bfcfb</apiKey>
+        <projectKey>sample-project</projectKey>
+        <issueMD5CustomerFieldId>1</issueMD5CustomerFieldId>
+        <issueMD5CustomerFieldName>issuemd5</issueMD5CustomerFieldName>
+        <subjectPrefix>测试用</subjectPrefix>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+       
+    <appender name="out" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="ALL">
+        <appender-ref ref="redmine"/>
+        <appender-ref ref="out"/>
+    </root>
+
+</configuration>
