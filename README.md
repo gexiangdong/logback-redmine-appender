@@ -3,13 +3,24 @@
 当有error发生时，此appender会把异常信息，以及异常发生时的 context 环境信息作为一个 issue 发送到redmine上。
 
 
-## 使用配置
+## 使用
+
+### 编译成jar包，并放到项目中
+
+```bash
+mvn package
+```
+把编译好的jar拷贝到项目中，然后按照下面的方法配置logback
+
+### 配置 redmine
 
 在redmine里建立一个自定义字段，名字为issuemd5，字符串型（用于发行issue时，决定是建立一个新的 issue，还是在老的issue上更新）。
+
 
 建立的规则是：如果同一处异常（根据异常堆栈），而且redmine上还有未关闭的issue，则在此issue下补充一条异常信息。否则创建一个新issue .
 
 
+### 配置 logback
 logback-spring.xml中可这样配置此appernder
 
 ```xml
