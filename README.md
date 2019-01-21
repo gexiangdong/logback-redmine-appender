@@ -41,6 +41,83 @@ logback-spring.xml中可这样配置此appernder
 
 ```
 
+### 在 spring boot REST 中有些异常被spring捕获到的问题
+
+RESTController （或其他）中的异常，会被spring boot捕获且把错误信息反馈给客户端，这些异常由于没有log.error记录，而无法在服务端记录。
+可以通过写一个带 `@RestControllerAdvice` 注解的类来处理，并用logger.error记录异常。
+
+```java
+package cn.devmgr.tutorial;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+ 
+ 
+/**
+ * 
+ * RestController执行过程中发生异常会被此处捕获处理
+ *
+ */
+@RestControllerAdvice
+public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
+    private final static Logger logger = LoggerFactory.getLogger(ControllerExceptionHandler.class);
+     
+    /**
+     * 通过ExceptionHandler来设置待捕获的异常，Throwable可捕获任何异常，但优先级最低，因此
+     * HttpRequestMethodNotSupportedException HttpMediaTypeNotSupportedException
+     * HttpMediaTypeNotAcceptableException MissingPathVariableException
+     * MissingServletRequestParameterException ServletRequestBindingException
+     * ConversionNotSupportedException TypeMismatchException
+     * HttpMessageNotReadableException HttpMessageNotWritableException
+     * MethodArgumentNotValidException MissingServletRequestPartException
+     * BindException NoHandlerFoundException AsyncRequestTimeoutException
+     * 等已经在父类声明捕获的异常不会被此方法处理。
+     */
+    @ExceptionHandler(Throwable.class)
+    @ResponseBody
+    ResponseEntity<Object> handleControllerException(Throwable ex, WebRequest request) {
+        Map<String,String> responseBody = new HashMap<>();
+        // 这里控制返回给客户端的信息
+        responseBody.put("message","internal server error. " + ex.getMessage());
+         
+        Exception e;
+        if(ex instanceof Exception) {
+            e = (Exception) ex;
+        }else {
+            e = new Exception(ex);
+        }
+        return handleExceptionInternal(e, responseBody, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+ 
+    /**
+     * 需要覆盖这个方法，并且在此方法里记录日志；查看ResponseEntityExceptionHandler源码可知，
+     * 有些异常被父类捕获，不会进入此类的handleControllerException，因此如果在handleControllerException
+     * 记录异常日志，会导致部分异常无日志
+     */
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body,
+            HttpHeaders headers, HttpStatus status, WebRequest request) {
+        if(log.isErrorEnabled()) {
+            log.error("内部错误", ex);
+        }
+        return super.handleExceptionInternal(ex, body, headers, status, request);
+    }
+}
+
+```
+
 
 ## LogFilter
 
