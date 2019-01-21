@@ -31,7 +31,7 @@ logback-spring.xml中可这样配置此appernder
         <projectKey>sample-project</projectKey>
         <issueMD5CustomerFieldId>1</issueMD5CustomerFieldId>
         <issueMD5CustomerFieldName>issuemd5</issueMD5CustomerFieldName>
-        <subjectPrefix>测试用</subjectPrefix>
+        <subjectPrefix>每个issue标题的前缀</subjectPrefix>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>ERROR</level>
             <onMatch>ACCEPT</onMatch>
