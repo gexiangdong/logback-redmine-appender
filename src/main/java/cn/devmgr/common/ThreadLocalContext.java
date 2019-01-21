@@ -11,14 +11,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class ThreadLocalManager {
-	private static Log log = LogFactory.getLog(ThreadLocalManager.class);
-	public static final String REQUEST = ThreadLocalManager.class.getName() + ".request";
-	public static final String RESPONSE = ThreadLocalManager.class.getName() + ".response";
+public class ThreadLocalContext {
+	private static Log log = LogFactory.getLog(ThreadLocalContext.class);
+	public static final String REQUEST = ThreadLocalContext.class.getName() + ".request";
+	public static final String RESPONSE = ThreadLocalContext.class.getName() + ".response";
 	
 	protected ThreadBindings m_bindings = new ThreadBindings();
 
-	private static ThreadLocalManager instance = new ThreadLocalManager();
+	private static ThreadLocalContext instance = new ThreadLocalContext();
 	
 	protected class ThreadBindings extends ThreadLocal<Map<String, Object>> {
 	    private String instanceTime = (new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")).format(new Date());
@@ -36,10 +36,10 @@ public class ThreadLocalManager {
 		}
 	}
 	
-	private ThreadLocalManager(){
+	private ThreadLocalContext(){
 		
 	}
-	public static ThreadLocalManager getInstance(){
+	public static ThreadLocalContext getInstance(){
 		return instance;
 	}
 	public static void setValue(String name, Object value){

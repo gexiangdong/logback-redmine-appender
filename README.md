@@ -31,4 +31,14 @@ logback-spring.xml中可这样配置此appernder
 ```
 
 
-s
+## LogFilter
+
+为了使异常中能够记录当前访问的URL等信息，需要启动 LogFilter ，在spring boot程序启动类上增加注解
+
+```xml
+@ServletComponentScan(basePackages = {"cn.devmgr.common"})
+```
+
+可以启动上述注解，另外上述注解还有一个功能，记录处理时间过长的程序，也是发送 issue 到 redmine。
+如需关闭此功能很简单把 cn.devmgr.common.filter.LogFilter 的日志级别设置为WARN或以上，就会关闭此功能。
+

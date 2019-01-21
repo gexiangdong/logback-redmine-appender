@@ -8,7 +8,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-import cn.devmgr.common.ThreadLocalManager;
+import cn.devmgr.common.ThreadLocalContext;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,9 +57,9 @@ public class LogFilter implements Filter {
 		}
 		long startTime = System.currentTimeMillis();
 		CustomHttpServletRequestWrapper req = new CustomHttpServletRequestWrapper((HttpServletRequest) request);
-		ThreadLocalManager.setRequest(req);
+		ThreadLocalContext.setRequest(req);
 		if("application/json".equalsIgnoreCase(req.getContentType())){
-			ThreadLocalManager.setValue(REQ_BODY, req.getBody());
+			ThreadLocalContext.setValue(REQ_BODY, req.getBody());
 		}
 		try {
 			chain.doFilter(req, response);
@@ -98,7 +98,7 @@ public class LogFilter implements Filter {
 				}
 
 			}
-			ThreadLocalManager.getInstance().clear();
+			ThreadLocalContext.getInstance().clear();
 		}
 	}
 

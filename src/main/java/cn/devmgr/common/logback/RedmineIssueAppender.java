@@ -14,7 +14,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import cn.devmgr.common.ThreadLocalManager;
+import cn.devmgr.common.ThreadLocalContext;
 import cn.devmgr.common.filter.LogFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -207,7 +207,7 @@ public class RedmineIssueAppender extends AppenderBase<ILoggingEvent> {
             buf.append("Date:" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.S").format(new Date()));
             buf.append("\r\n");
 
-            final HttpServletRequest request = ThreadLocalManager.getRequest();
+            final HttpServletRequest request = ThreadLocalContext.getRequest();
             if (request != null) {
                 buf.append("\r\nIP: " + request.getRemoteAddr());
                 buf.append("\r\nBrowser: " + request.getHeader("User-Agent"));
@@ -221,7 +221,7 @@ public class RedmineIssueAppender extends AppenderBase<ILoggingEvent> {
                 buf.append("\r\nRequest Parameter Values:");
                 printKeyValue(buf, request.getParameterNames(), key -> request.getParameter(key));
 
-                String body = (String) ThreadLocalManager.getValue(LogFilter.REQ_BODY);
+                String body = (String) ThreadLocalContext.getValue(LogFilter.REQ_BODY);
                 if (body != null && body.length() > 0) {
                     buf.append("\r\nRequest body:");
                     HashMap<String, Object> map = new ObjectMapper().readValue(body,
